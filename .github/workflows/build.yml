@@ -1,0 +1,123 @@
+name: Build and Release Spectrum Client
+
+on:
+  schedule:
+    # UTC 15:00 = NZDT 4:00 AM (NZST ~3 AM)
+    - cron: "0 15 * * *"
+
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: "Build type"
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - release
+      version:
+        description: "Version tag (required for release builds, e.g. v1.2.3)"
+        required: false
+        type: string
+
+jobs:
+  export_spectrum:
+    name: Build Spectrum Client
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    env:
+      IS_RELEASE: ${{ github.event_name == 'workflow_dispatch' && inputs.build_type == 'release' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ env.IS_RELEASE == 'true' && 'master' || 'dev' }}
+          submodules: 'true'
+
+      - name: Compute build version
+        id: version
+        run: |
+          if [[ "${{ env.IS_RELEASE }}" == "true" ]]; then
+              if [[ -z "${{ inputs.version }}" ]]; then
+                  echo "❌ Release builds require a version"
+                  exit 1
+              fi
+              echo "VERSION=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          else
+              DATE=$(date -u +"%Y%m%d")
+              SHA=$(git rev-parse --short HEAD)
+              echo "VERSION=dev-${DATE}-${SHA}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: install wine
+        id: wine_install
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y wine64 wine32
+          echo "WINE_PATH=$(which wine)" >> $GITHUB_OUTPUT
+
+      - name: Export Spectrum
+        id: export
+        uses: firebelley/godot-export@v7.0.0
+        with:
+          godot_executable_download_url: https://github.com/not-my-username/godot/releases/download/4.5.2-so_reusraddr/godot.linuxbsd.editor.x86_64.zip
+          godot_export_templates_download_url: https://github.com/not-my-username/godot/releases/download/4.5.2-so_reusraddr/4.5.2.stablereuseaddr.zip
+          relative_project_path: ./
+          archive_output: false 
+          cache: true
+          presets_to_export: windows.x86_64, macOS.universal, linux.x86_64
+          wine_path: ${{ steps.wine_install.outputs.WINE_PATH }} # set the wine path here which is the output of the wine_install step
+
+
+      - name: Rename Archives
+        run: |
+          cd ${{ steps.export.outputs.build_directory }}
+          mv linux.x86_64/linux.x86_64.zip SpectrumClient.x86_64.linux.${{ steps.version.outputs.VERSION }}.zip
+          mv windows.x86_64/windows.x86_64.zip SpectrumClient.x86_64.windows.${{ steps.version.outputs.VERSION }}.zip
+          mv macOS.universal/macOS.universal.zip SpectrumClient.universal.macOS.${{ steps.version.outputs.VERSION }}.zip
+
+      - name: Tag current commit for Latest Dev Build
+        if: env.IS_RELEASE != 'true'
+        run: |
+          TAG_NAME=latest-dev-build
+          # Delete local tag if it exists
+          git tag -d $TAG_NAME || true
+          # Delete remote tag if it exists
+          git push origin :refs/tags/$TAG_NAME || true
+          # Tag the current commit
+          git tag $TAG_NAME $GITHUB_SHA
+          git push origin $TAG_NAME
+
+      - name: Update "Latest dev build" release
+        if: env.IS_RELEASE != 'true'
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: latest-dev-build
+          name: latest-dev-release
+          prerelease: true
+          allowUpdates: true
+          removeArtifacts: true
+          replacesArtifacts: true
+          artifacts: ${{ steps.export.outputs.build_directory }}/*
+
+      - name: Create git tag
+        if: env.IS_RELEASE == 'true'
+        run: |
+          git tag ${{ steps.version.outputs.VERSION }}
+          git push origin ${{ steps.version.outputs.VERSION }}
+
+      - name: Create GitHub Release
+        if: env.IS_RELEASE == 'true'
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.version.outputs.VERSION }}
+          name: ${{ steps.version.outputs.VERSION }}
+          generateReleaseNotes: true
+          artifacts: ${{ steps.export.outputs.build_directory }}/*

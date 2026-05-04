@@ -1,0 +1,17 @@
+# Godot specific ignores
+.godot/
+.import/
+*.translation
+.mono/
+data_*/
+mono_crash.*.json
+
+# What ever apple did
+.DS_Store
+
+# Repo specific ignores
+export/
+android/
+.vscode
+
+## Submodules
