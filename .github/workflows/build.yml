@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          ref: ${{ env.IS_RELEASE == 'true' && 'master' || 'dev' }}
+          ref: ${{ env.IS_RELEASE == 'true' && 'main' || 'dev' }}
           submodules: 'true'
 
       - name: Compute build version
