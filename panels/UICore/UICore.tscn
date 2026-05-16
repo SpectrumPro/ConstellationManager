@@ -18,6 +18,7 @@ boot_splash = NodePath("ColorRect")
 
 [node name="UIConstellationManager" parent="." instance=ExtResource("3_7xt6w")]
 layout_mode = 1
+display_mode = 2
 
 [node name="ColorRect" type="ColorRect" parent="."]
 visible = false
