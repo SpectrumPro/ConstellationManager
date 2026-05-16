@@ -7,13 +7,16 @@ class_name UIConstellationManagerSessionsTab extends PanelContainer
 
 
 ## The Table Node to show all Constellation Nods
-@export var _table: Table
+@onready var _table: Table = %SessionTable
+
+## The CreateSession Button
+@onready var _create_session_button: Button = %CreateSessionButton
 
 ## The LeaveSession Button
-@export var leave_session_button: Button
+@onready var _leave_session_button: Button = %LeaveSessionButton
 
 ## The JoinSession Button
-@export var join_session_button: Button
+@onready var _join_session_button: Button = %JoinSessionButton
 
 
 ## Enum for each Columns
@@ -43,8 +46,8 @@ var _session_connections: SignalGroup = SignalGroup.new([], {
 func _ready() -> void:
 	_constellation = Network.get_active_handler_by_name("Constellation")
 	
-	_constellation.get_local_node().session_joined.connect(func (p_session: ConstellationSession): leave_session_button.set_disabled(false))
-	_constellation.get_local_node().session_left.connect(func (): leave_session_button.set_disabled(true))
+	_constellation.get_local_node().session_joined.connect(_on_session_joined)
+	_constellation.get_local_node().session_left.connect(_on_session_left)
 	
 	for column_name: String in Columns:
 		_table.add_column(column_name.capitalize(), _column_config[Columns[column_name]].type)
@@ -81,6 +84,18 @@ func reset() -> void:
 	_table.clear()
 
 
+## Called when the localNode joins a session
+func _on_session_joined(p_session: ConstellationSession) -> void:
+	_leave_session_button.set_disabled(false)
+	_create_session_button.set_disabled(true)
+
+
+## Called when the localNode leaves a session
+func _on_session_left() -> void:
+	_leave_session_button.set_disabled(true)
+	_create_session_button.set_disabled(false)
+
+
 ## Called when the create session button is pressed
 func _on_create_session_button_pressed() -> void:
 	Popups.show_data_input(self, Data.Type.STRING, "NewSession", "Session Name").then(func (p_name: String):
@@ -100,7 +115,12 @@ func _on_join_session_button_pressed() -> void:
 
 ## Called when the selection is changed
 func _on_table_selection_changed() -> void:
-	join_session_button.set_disabled(not _table.is_any_selected())
+	var selected: ConstellationSession = _session_rows.right(_table.get_selected_row())
+	
+	if is_instance_valid(selected) and selected != _constellation.get_local_node().get_session():
+		_join_session_button.set_disabled(false)
+	else:
+		_join_session_button.set_disabled(true)
 
 
 ## Called when the Reload Button is pressed
