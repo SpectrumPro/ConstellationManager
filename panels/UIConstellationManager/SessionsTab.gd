@@ -35,7 +35,7 @@ var _session_rows: RefMap = RefMap.new()
 
 ## SignalGroup for each ConstellationSession
 var _session_connections: SignalGroup = SignalGroup.new([], {
-	"request_delete": remove_session
+	"delete_requested": remove_session
 })
 
 
@@ -52,7 +52,7 @@ func _ready() -> void:
 
 ## Adds a ConstellationSession to the table
 func add_session(p_session: ConstellationSession) -> void:
-	_session_connections.connect_object(p_session, true)
+	_session_connections.connect_object(p_session)
 	_session_rows.map(p_session, _table.add_row({
 		Columns.NAME: p_session.get_settings().get_entry("Name"),
 		Columns.MEMBER_COUNT: p_session.get_settings().get_entry("MemberCount"),
@@ -64,10 +64,12 @@ func add_session(p_session: ConstellationSession) -> void:
 func remove_session(p_session: ConstellationSession) -> void:
 	var row: Table.Row = _session_rows.left(p_session)
 	
-	if row:
-		_table.remove_row(row)
-		_session_rows.erase_left(p_session)
-		_session_connections.disconnect_object(p_session, true)
+	if not is_instance_valid(row):
+		return
+	
+	_table.remove_row(row)
+	_session_rows.erase_left(p_session)
+	_session_connections.disconnect_object(p_session)
 
 
 ## Resets the UI, removing all nodes from the table
