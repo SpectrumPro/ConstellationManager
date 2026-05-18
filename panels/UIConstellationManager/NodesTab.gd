@@ -11,7 +11,7 @@ class_name UIConstellationManagerNodesTab extends PanelContainer
 
 
 ## Enum for each Columns
-enum Columns {NAME, IP_ADDR, ROLE_FLAGS, CONNECTION_STATUS, SESSION}
+enum Columns {NAME, IP_ADDR, ROLE_FLAGS, CONNECTION_STATUS, PING, SESSION}
 
 ## Config for each column
 var _column_config: Dictionary[int, Dictionary] = {
@@ -19,6 +19,7 @@ var _column_config: Dictionary[int, Dictionary] = {
 	Columns.IP_ADDR: {"type": Data.Type.STRING},
 	Columns.ROLE_FLAGS: {"type": Data.Type.BITFLAGS},
 	Columns.CONNECTION_STATUS: {"type": Data.Type.ENUM},
+	Columns.PING: {"type": Data.Type.FLOAT},
 	Columns.SESSION: {"type": Data.Type.OBJECT},
 }
 
@@ -39,12 +40,15 @@ func _ready() -> void:
 
 ## Adds a ConstellationNode to the table
 func add_node(p_node: ConstellationNode) -> void:
+	var settings: SettingsManager = p_node.get_settings()
+	
 	_node_rows.map(p_node, _table.add_row({
-		Columns.NAME: p_node.get_settings().get_entry("Name"),
-		Columns.IP_ADDR:p_node.get_settings().get_entry("IpAddress"),
-		Columns.ROLE_FLAGS: p_node.get_settings().get_entry("RoleFlags"),
-		Columns.CONNECTION_STATUS: p_node.get_settings().get_entry("ConnectionState"),
-		Columns.SESSION: p_node.get_settings().get_entry("Session"),
+		Columns.NAME: settings.get_entry("Name"),
+		Columns.IP_ADDR:settings.get_entry("IpAddress"),
+		Columns.ROLE_FLAGS: settings.get_entry("RoleFlags"),
+		Columns.CONNECTION_STATUS: settings.get_entry("ConnectionState"),
+		Columns.PING: settings.get_entry("Ping"),
+		Columns.SESSION: settings.get_entry("Session"),
 	}))
 
 
