@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://clv1fj0sivtmp" path="res://panels/UICore/UICore.gd" id="1_ocynv"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://modules/Vertex/assets/themes/Main.theme" id="1_r706s"]
-[ext_resource type="PackedScene" uid="uid://dpkn0u6ocbxrj" path="res://panels/UIConstellationManager/UIConstellationManager.tscn" id="3_7xt6w"]
-[ext_resource type="Texture2D" uid="uid://d0ylqxpba8oj2" path="res://assets/logos/constellation/constellation-dark-scaled/constellation-dark-256px.png" id="4_p6pgv"]
+[ext_resource type="PackedScene" uid="uid://dpkn0u6ocbxrj" path="res://modules/UIConstellationManager/panels/UIConstellationManager.tscn" id="3_7xt6w"]
+[ext_resource type="Texture2D" uid="uid://d0ylqxpba8oj2" path="res://modules/UIConstellationManager/assets/logos/constellation/constellation-dark-scaled/constellation-dark-256px.png" id="4_p6pgv"]
 
 [node name="UICore" type="Control" node_paths=PackedStringArray("boot_splash")]
 layout_mode = 3
