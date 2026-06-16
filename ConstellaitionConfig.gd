@@ -3,7 +3,7 @@ static var config: Dictionary = {
 	"custom_loging_method": Log.info,
 	
 	## Defines a custom callable to call when logging infomation verbosely
-	"custom_loging_method_verbose": Callable(),
+	"custom_loging_method_verbose": Log.info,
 	
 	## A String prefix to print before all message logs
 	"log_prefix": "CTL:",
@@ -33,7 +33,7 @@ static var config: Dictionary = {
 	"session_auto_rejoin": true,
 	
 	## True if this node should auto create a session once online, asuming previous session is is null and the node is not already in a session
-	"auto_create_ession": false,
+	"auto_create_session": false,
 	
 	## The CoreClassListDB for all NetworkItems
 	"network_item_class_db": NetworkClassList
