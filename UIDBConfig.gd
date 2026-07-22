@@ -16,7 +16,7 @@ const ICON_LOCATION: String = "res://assets/icons/"
 
 ## All user defined UIPanels
 static var panels: Dictionary[String, PackedScene] = {
-	"UICore":								load(_p("UICore")),
+	"UICore":								load(_p(UICore)),
 	"UIConstellationManager":				load("res://modules/UIConstellationManager/panels/UIConstellationManager.tscn"),
 }
 
@@ -29,7 +29,7 @@ static var components: Dictionary[String, PackedScene]
 ## All user defined UIPanels
 static var data_inputs: Dictionary[Data.Type, Variant] = {
 	Data.Type.OBJECT:			{
-		Data.Sub.Type.NULL:						load(CoreUIDB._d("DataInputObject")),
+		Data.Sub.Type.NULL:						load(CoreUIDB._d(DataInputObject)),
 	}
 }
 
@@ -60,23 +60,27 @@ static var config: Dictionary[String, Variant] = {
 
 
 ## Returns the file path of a UIPanel
-static func _p(p_panel_class: String) -> String:
-	return str(UI_PANEL_LOCATION, p_panel_class, "/", p_panel_class, ".tscn")
+static func _p(p_panel_script: Script) -> String:
+	var panel_class: String = p_panel_script.get_global_name()
+	return str(UI_PANEL_LOCATION, panel_class, "/", panel_class, ".tscn")
 
 
 ## Returns the file path of a UIPopup
-static func _u(p_popup_class: String) -> String:
-	return str(UI_POPUP_LOCATION, p_popup_class, "/", p_popup_class, ".tscn")
+static func _u(p_popup_script: Script) -> String:
+	var popup_class: String = p_popup_script.get_global_name()
+	return str(UI_POPUP_LOCATION, popup_class, "/", popup_class, ".tscn")
 
 
 ## Returns the file path of a UIComponent
-static func _c(p_component_class: String) -> String:
-	return str(UI_COMPONENT_LOCATION, p_component_class, "/", p_component_class, ".tscn")
+static func _c(p_component_script: Script) -> String:
+	var component_class: String = p_component_script.get_global_name()
+	return str(UI_COMPONENT_LOCATION, component_class, "/", component_class, ".tscn")
 
 
 ## Returns the file path of a DataInput
-static func _d(p_data_input_class: String) -> String:
-	return str(DATA_INPUT_LOCATION, p_data_input_class, "/", p_data_input_class, ".tscn")
+static func _d(p_data_input_script: Script) -> String:
+	var data_input_class: String = p_data_input_script.get_global_name()
+	return str(DATA_INPUT_LOCATION, data_input_class, "/", data_input_class, ".tscn")
 
 
 ## Returns the file path of a Icon
