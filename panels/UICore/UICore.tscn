@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://cn7j2ooippgmw"]
+[gd_scene format=3 uid="uid://cn7j2ooippgmw"]
 
 [ext_resource type="Script" uid="uid://clv1fj0sivtmp" path="res://panels/UICore/UICore.gd" id="1_ocynv"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://modules/Vertex/assets/themes/Main.theme" id="1_r706s"]
 [ext_resource type="PackedScene" uid="uid://dpkn0u6ocbxrj" path="res://modules/UIConstellationManager/panels/UIConstellationManager.tscn" id="3_7xt6w"]
 [ext_resource type="Texture2D" uid="uid://d0ylqxpba8oj2" path="res://modules/UIConstellationManager/assets/logos/constellation/constellation-dark-scaled/constellation-dark-256px.png" id="4_p6pgv"]
 
-[node name="UICore" type="Control" node_paths=PackedStringArray("boot_splash")]
+[node name="UICore" type="Control" unique_id=2127896325 node_paths=PackedStringArray("boot_splash")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,11 +16,11 @@ theme = ExtResource("1_r706s")
 script = ExtResource("1_ocynv")
 boot_splash = NodePath("ColorRect")
 
-[node name="UIConstellationManager" parent="." instance=ExtResource("3_7xt6w")]
+[node name="UIConstellationManager" parent="." unique_id=766414742 instance=ExtResource("3_7xt6w")]
 layout_mode = 1
 display_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=160153889]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -30,7 +30,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0901961, 0.0901961, 0.0901961, 1)
 
-[node name="TextureRect" type="TextureRect" parent="ColorRect"]
+[node name="TextureRect" type="TextureRect" parent="ColorRect" unique_id=935369395]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
