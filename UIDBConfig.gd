@@ -16,8 +16,8 @@ const ICON_LOCATION: String = "res://assets/icons/"
 
 ## All user defined UIPanels
 static var panels: Dictionary[String, PackedScene] = {
-	"UICore":								load(_p(UICore)),
-	"UIConstellationManager":				load("res://modules/UIConstellationManager/panels/UIConstellationManager.tscn"),
+	"UICore":					load(_p(UICore)),
+	"UIConstellationManager":	load("res://modules/UIConstellationManager/panels/UIConstellationManager/UIConstellationManager.tscn"),
 }
 
 ## All user defined UIPanels
